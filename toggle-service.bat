@@ -1,1 +1,1 @@
-Powershell -executionpolicy remotesigned -File toggle-service.ps1
+@Powershell -executionpolicy remotesigned -File toggle-service.ps1 %1
