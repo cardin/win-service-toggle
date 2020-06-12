@@ -76,6 +76,7 @@ if (!$statusObj) {
 if (!$hasPriorDecision) {
     Write-Color "Service {cyan}$serviceName {$origColor}is $(coloriseStatus $statusObj). Do you want to toggle it?"
     $decision = $Host.UI.PromptForChoice("", "", @("&No"; "&Yes"), 0)
+    Write-Host
 }
 else {
     $decision = $priorDecision
@@ -85,8 +86,14 @@ if ($decision) {
     # Restart As Admin (if not admin)
     if (!$isAdmin) {
         Write-Host "Attempting to restart as Admin"
-        Start-Process pwsh -ArgumentList "-File $($script:MyInvocation.MyCommand.Definition) $serviceName $decision" -Verb RunAs -Wait -WindowStyle Hidden
-        Write-Color "Service {cyan}$serviceName {$origColor}is now $(coloriseStatus $(Get-Service $serviceName))"
+        $exitCode = Start-Process pwsh -ArgumentList "-File $($script:MyInvocation.MyCommand.Definition) $serviceName $decision" -Verb RunAs -Wait -WindowStyle Hidden
+        if ($exitCode.ExitCode -ne 0) {
+            Write-Color "{red}Unable to toggle {cyan}$serviceName"
+            Write-Color "{red}You must allow Administrator mode!"
+            Write-Host
+        }
+
+        Write-Color "Service {cyan}$serviceName {$origColor}is now $(coloriseStatus $(Get-Service $serviceName)){$origColor}"
         Read-Host -Prompt "Press any key to continue..."
         Exit
     }
