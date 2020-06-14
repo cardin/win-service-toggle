@@ -86,7 +86,7 @@ if ($decision) {
     # Restart As Admin (if not admin)
     if (!$isAdmin) {
         Write-Host "Attempting to restart as Admin"
-        $exitCode = Start-Process pwsh -ArgumentList "-File $($script:MyInvocation.MyCommand.Definition) $serviceName $decision" -Verb RunAs -Wait -WindowStyle Hidden
+        $exitCode = Start-Process pwsh -ArgumentList "-File $($script:MyInvocation.MyCommand.Definition) $serviceName $decision" -Verb RunAs -Wait -WindowStyle Hidden -PassThru
         if ($exitCode.ExitCode -ne 0) {
             Write-Color "{red}Unable to toggle {cyan}$serviceName"
             Write-Color "{red}You must allow Administrator mode!"
